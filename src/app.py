@@ -82,14 +82,14 @@ def predict():
             return jsonify({"error": "No input data provided"}), 400
 
         # Use lib-ml function for preprocessing
-        print(f"Preprocessing input data: {data}")
+        logger.debug(f"Preprocessing input data: {data}")
         processed_data = preprocess_inference(data, "models/vectorizer.pkl")
 
         import numpy as np
 
         np.set_printoptions(threshold=np.inf)
 
-        print(f"processed_data {processed_data}")
+        logger.debug(f"processed_data {processed_data}")
 
         # Fetch model and run predictions
         prediction = model.predict(processed_data.reshape(1, -1))
