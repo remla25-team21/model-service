@@ -6,6 +6,10 @@ import requests
 from libml.preprocessing import preprocess_train, preprocess_inference
 import pickle
 import numpy as np
+import os
+
+if not os.path.exists("models"):
+    os.makedirs("models")
 
 # Download models from GitHub Releases
 MODEL_VERSION = "v0.0.9"
