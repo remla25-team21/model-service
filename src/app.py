@@ -1,12 +1,13 @@
 from flask import Flask
 from flask import request, current_app, jsonify
-import logging
 from flasgger import Swagger, swag_from
 import requests
 from libml.preprocessing import preprocess_train, preprocess_inference
 import pickle
 import numpy as np
 import os
+import logging
+
 
 if not os.path.exists("models"):
     os.makedirs("models")
@@ -25,15 +26,28 @@ for name, url in files.items():
         f.write(response.content)
 
 # Load downloaded model and vectorizer
-with open("models/model.pkl", "rb") as f:
-    model = pickle.load(f)
+try:
+    with open("models/model.pkl", "rb") as f:
+        model = pickle.load(f)
+    logging.info("Model loaded successfully.")
+except Exception as e:
+    logging.error(f"Error loading model: {e}")
+    raise
 
-with open("models/vectorizer.pkl", "rb") as f:
-    vectorizer = pickle.load(f)
+try:
+    with open("models/vectorizer.pkl", "rb") as f:
+        vectorizer = pickle.load(f)
+    logging.info("Vectorizer loaded successfully.")
+except Exception as e:
+    logging.error(f"Error loading vectorizer: {e}")
+    raise
 
 app = Flask(__name__)
 swagger = Swagger(app)
-logger = logging.getLogger(__name__)
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 @app.route("/")
@@ -87,22 +101,23 @@ def predict():
             return jsonify({"error": "No input data provided"}), 400
 
         # Use lib-ml function for preprocessing
-        logger.debug(f"Preprocessing input data: {data}")
+        logging.debug(f"Preprocessing input data: {data}")
         processed_data = preprocess_inference(data, "models/vectorizer.pkl")
 
         np.set_printoptions(threshold=np.inf)
 
-        logger.debug(f"processed_data {processed_data}")
+        logging.debug(f"processed_data {processed_data}")
 
         # Fetch model and run predictions
         prediction = model.predict(processed_data.reshape(1, -1))
+        logging.info(f"Prediction result: {prediction[0]}")
 
         # Return results
         result = {"prediction": int(prediction[0])}
         return jsonify(result), 200
 
     except Exception as e:
-        logger.exception(f"Prediction error: {str(e)}")
+        logging.error(f"Prediction error: {str(e)}")
         return jsonify({"error": "Prediction failed"}), 500
 
 
