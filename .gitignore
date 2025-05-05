@@ -56,5 +56,5 @@ coverage.xml
 # pytest cache
 .pytest_cache/
 
-/model
+/models
 

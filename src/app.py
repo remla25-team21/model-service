@@ -5,6 +5,7 @@ from flasgger import Swagger, swag_from
 import requests
 from libml.preprocessing import preprocess_train, preprocess_inference
 import pickle
+import numpy as np
 
 # Download models from GitHub Releases
 MODEL_VERSION = "v0.0.9"
@@ -84,8 +85,6 @@ def predict():
         # Use lib-ml function for preprocessing
         logger.debug(f"Preprocessing input data: {data}")
         processed_data = preprocess_inference(data, "models/vectorizer.pkl")
-
-        import numpy as np
 
         np.set_printoptions(threshold=np.inf)
 
