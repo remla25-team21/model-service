@@ -1,0 +1,12 @@
+[MESSAGES CONTROL]
+disable =
+    C0114,  # missing-module-docstring
+    C0116,  # missing-function-docstring
+    W0718,  # Allow catching exception
+    W1203,  # Allow f-strings in logging instead of lazy %-formatting
+    W3101,  # missing-timeout
+    C0411,  # wrong-import-order
+    W0611   # unused-import
+
+[FORMAT]
+max-line-length = 120
