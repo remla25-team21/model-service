@@ -21,7 +21,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run pylint
-        run: pylint --rcfile=path/to/.pylintrc src/ --fail-under=8
+        run: pylint src/ --fail-under=8
 
       - name: Run flake8
         run: flake8 src/
