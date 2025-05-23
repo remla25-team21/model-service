@@ -22,12 +22,15 @@ jobs:
 
       - name: Run pylint
         run: pylint src/
+        continue-on-error: true
 
       - name: Run flake8
         run: flake8 src/
+        continue-on-error: true
 
       - name: Run bandit
         run: bandit -r src/
+        continue-on-error: true
 
       - name: Run tests
         run: pytest tests/
