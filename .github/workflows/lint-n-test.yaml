@@ -35,8 +35,8 @@ jobs:
       - name: Update README badge
         run: |
           score=${{ steps.pylint.outputs.pylint_score }}
-          badge="![Pylint Score](https://img.shields.io/badge/pylint-${score//./%2E}%2F10-brightgreen)"
-          sed -i "s|<!-- PYLINT_BADGE -->|$badge|" README.md
+          badge="![Pylint Score](https://img.shields.io/badge/pylint-${score//./%2E}%2F10-brightgreen) <!-- PYLINT_BADGE -->"
+          sed -i "s|<!-- PYLINT_BADGE -->.*|$badge|" README.md
 
       - name: Run flake8
         run: flake8 src/
