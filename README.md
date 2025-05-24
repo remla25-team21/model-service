@@ -1,5 +1,7 @@
 # model-service
 
+<!-- PYLINT_BADGE -->
+
 This repository acts as a wrapper service for the ML model which provides a REST API to expose the model via endpoints.
 
 ### Documentation:

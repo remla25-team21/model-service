@@ -109,8 +109,8 @@ def predict():
 
         # Fetch model and run predictions
         batch_size = 1
-        flatten_dim = -1
-        prediction = model.predict(processed_data.reshape(batch_size, flatten_dim))
+        #flatten_dim = -1
+        prediction = model.predict(processed_data.reshape(batch_size, -1))
         logging.info(f"Prediction result: {prediction[0]}")
 
         # Return results

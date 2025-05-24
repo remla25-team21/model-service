@@ -20,8 +20,33 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run pylint
-        run: PYTHONPATH=. pylint src/ --fail-under=8
+      - id: pylint
+        run: |
+          pylint_output=$(PYTHONPATH=. pylint src/ --fail-under=8)
+          echo "$pylint_output"
+          score_line=$(echo "$pylint_output" | grep "Your code has been rated at")
+          if [[ $score_line =~ ([0-9]+\.[0-9]+)/10 ]]; then
+            score="${BASH_REMATCH[1]}"
+          else
+            score="unknown"
+          fi
+          echo "pylint_score=$score" >> $GITHUB_OUTPUT
+
+      - name: Update README badge
+        run: |
+          score=${{ steps.pylint.outputs.pylint_score }}
+          badge="![Pylint Score](https://img.shields.io/badge/pylint-${score//./%2E}%2F10-brightgreen)"
+          sed -i "s|<!-- PYLINT_BADGE -->|$badge|" README.md
+
+      - name: Commit README update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update pylint score badge to ${{ steps.pylint.outputs.pylint_score }}"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run flake8
         run: flake8 src/
