@@ -1,3 +1,6 @@
+[MASTER]
+load-plugins=pylint_smell_checker
+
 [MESSAGES CONTROL]
 disable =
     C0114,  # missing-module-docstring

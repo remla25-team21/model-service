@@ -39,3 +39,4 @@ pylint
 flake8
 bandit
 pytest
+astroid
