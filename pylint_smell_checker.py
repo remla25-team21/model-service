@@ -97,6 +97,51 @@ class MissingDataValidationChecker(BaseChecker):
         return False
 
 
+class ImplicitHyperparameterChecker(BaseChecker):
+    name = 'implicit-hyperparameter-checker'
+    msgs = {
+        'C9005': (
+            'Detected implicit hyperparameter or shape value. Use named constants or configuration.',
+            'implicit-hyperparameter',
+            'Avoid magic numbers or implicit reshaping in ML workflows; define shape/hyperparameters clearly.',
+        ),
+    }
+
+    def visit_call(self, node):
+        """
+        Detect calls where numeric literals are used in any arguments.
+        """
+        try:
+            for arg in node.args:
+                if self._contains_literal_value(arg):
+                    self.add_message('implicit-hyperparameter', node=arg)
+            for keyword in node.keywords:
+                if self._contains_literal_value(keyword.value):
+                    self.add_message('implicit-hyperparameter', node=keyword.value)
+        except Exception:
+            pass
+
+    def _contains_literal_value(self, arg):
+        """
+        Recursively checks if any part of the argument contains a numeric literal.
+        Handles:
+        - Numeric literals (int, float)
+        - Unary operations (eg: -1)
+        - Tuples/lists with literals (even if mixed with variables)
+        - Dicts with numeric values
+        """
+        if isinstance(arg, astroid.Const):
+            return isinstance(arg.value, (int, float))
+        elif isinstance(arg, astroid.UnaryOp):
+            return self._contains_literal_value(arg.operand)
+        elif isinstance(arg, (astroid.Tuple, astroid.List)):
+            return any(self._contains_literal_value(elt) for elt in arg.elts)
+        elif isinstance(arg, astroid.Dict):
+            return any(self._contains_literal_value(val) for val in arg.values)
+        return False
+
+
 def register(linter):
     linter.register_checker(HardcodedModelDownloadChecker(linter))
     linter.register_checker(MissingDataValidationChecker(linter))
+    linter.register_checker(ImplicitHyperparameterChecker(linter))
