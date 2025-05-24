@@ -1,0 +1,4 @@
+[flake8]
+# Ignore unused imports and line length errors
+ignore = F401, E501
+max-line-length = 120

@@ -7,14 +7,13 @@ import pickle
 import numpy as np
 import os
 import logging
+from config import BASE_URL, MODEL_VERSION
 
 
 if not os.path.exists("models"):
     os.makedirs("models")
 
 # Download models from GitHub Releases
-MODEL_VERSION = "v0.0.9"
-BASE_URL = f"https://github.com/remla25-team21/model-training/releases/download/{MODEL_VERSION}"
 files = {
     "model": f"{BASE_URL}/sentiment_model_{MODEL_VERSION}.pkl",
     "vectorizer": f"{BASE_URL}/c1_BoW_Sentiment_Model_{MODEL_VERSION}.pkl",
@@ -109,7 +108,9 @@ def predict():
         logging.debug(f"processed_data {processed_data}")
 
         # Fetch model and run predictions
-        prediction = model.predict(processed_data.reshape(1, -1))
+        batch_size = 1
+        flatten_dim = -1
+        prediction = model.predict(processed_data.reshape(batch_size, flatten_dim))
         logging.info(f"Prediction result: {prediction[0]}")
 
         # Return results
@@ -121,5 +122,5 @@ def predict():
         return jsonify({"error": "Prediction failed"}), 500
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)

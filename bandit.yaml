@@ -1,0 +1,7 @@
+skips:
+  - B301  # pickle.load (blacklisted call)
+  - B403  # import of pickle (blacklisted import)
+  - B113  # requests without timeout
+
+exclude_dirs:
+  - tests/
