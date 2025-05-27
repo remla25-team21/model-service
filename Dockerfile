@@ -12,10 +12,10 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENV FLASK_APP=src/app.py
-ENV PYTHONUNBUFFERED=1
-ENV FLASK_ENV=development
+ENV PYTHONPATH=/app
+ENV PORT=8080
+ENV HOST=0.0.0.0
 
-EXPOSE 8080
+EXPOSE ${PORT}
 
-CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=8080"]
+CMD ["python", "src/app.py"]
