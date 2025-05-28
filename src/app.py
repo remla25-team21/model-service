@@ -10,9 +10,12 @@ import os
 import logging
 from config import MODEL_VERSION, BASE_URL
 
+DEFAULT_PORT = 8080
+DEFAULT_HOST = "127.0.0.1"
+
 # Set up environment variables
-HOST = os.environ.get("HOST", "0.0.0.0")
-PORT = os.environ.get("PORT", 8080)
+HOST = os.environ.get("HOST", DEFAULT_HOST)
+PORT = int(os.environ.get("PORT", DEFAULT_PORT))
 
 
 if not os.path.exists("models"):
@@ -129,4 +132,4 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(host=HOST, port=PORT, debug=False)
+    app.run(host=HOST, port=PORT)
