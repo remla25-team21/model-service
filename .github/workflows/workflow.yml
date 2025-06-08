@@ -98,7 +98,9 @@ jobs:
           pre_counter="${{ env.PRE_RELEASE_COUNTER }}"
           IFS='.' read -r major minor patch <<< "$current_version"
 
-          next_pre_release_version="${major}.${minor}.${patch}-pre.${pre_counter}"
+          next_patch=$((patch + 1))
+
+          next_pre_release_version="${major}.${minor}.${next_patch}-pre.${pre_counter}"
 
           echo "Next pre-release version: $next_pre_release_version"
           echo "NEXT_VERSION=$next_pre_release_version" >> $GITHUB_ENV
