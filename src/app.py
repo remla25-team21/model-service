@@ -1,13 +1,21 @@
 from flask import Flask
-from flask import request, current_app, jsonify
+from flask import request, jsonify
 from flasgger import Swagger, swag_from
 import requests
-from libml.preprocessing import preprocess_train, preprocess_inference
+from libml.preprocessing import preprocess_inference
+
 import pickle
 import numpy as np
 import os
 import logging
-from config import BASE_URL, MODEL_VERSION
+from config import MODEL_VERSION, BASE_URL
+
+DEFAULT_PORT = 8080
+DEFAULT_HOST = "127.0.0.1"
+
+# Set up environment variables
+HOST = os.environ.get("HOST", DEFAULT_HOST)
+PORT = int(os.environ.get("PORT", DEFAULT_PORT))
 
 
 if not os.path.exists("models"):
@@ -64,6 +72,7 @@ def home():
 @app.route("/predict", methods=["POST"])
 @swag_from(
     {
+        "summary": "Make a sentiment prediction based on input review",
         "tags": ["Prediction"],
         "parameters": [
             {
@@ -122,5 +131,5 @@ def predict():
         return jsonify({"error": "Prediction failed"}), 500
 
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host=HOST, port=PORT)
