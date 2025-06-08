@@ -52,8 +52,17 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout ${{ github.head_ref || github.ref_name }} # Switch to the branch
+
           git add README.md
+
+          # Check if there are any staged changes. If not, exit gracefully.
+          # `git diff --staged --quiet` exits with 1 if there are changes, 0 if not.
+          if git diff --staged --quiet; then
+            echo "No changes to commit. README is up-to-date."
+            exit 0
+          fi
+
+          # If there are changes, commit and push them
           git commit -m "Update pylint score badge to ${{ steps.pylint.outputs.pylint_score }}"
           git push
         env:
